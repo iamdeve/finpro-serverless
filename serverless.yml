@@ -1,0 +1,190 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: finpro-apis
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+frameworkVersion: '2'
+useDotenv: true
+provider:
+    name: aws
+    runtime: nodejs12.x
+    region: us-east-1
+    apiGateway:
+        shouldStartNameWithService: true
+        binaryMediaTypes:
+            - 'multipart/form-data'
+    stage: dev
+    httpApi:
+        cors: true
+    lambdaHashingVersion: 20201221
+    environment:
+        MONGO_URI: ${env:MONGO_URI}
+        port: ${env:port}
+        JWT_SESSION_KEY: ${env:JWT_SESSION_KEY}
+        pool_id: ${env:pool_id}
+        app_client_id: ${env:app_client_id}
+        pool_region: ${env:pool_region}
+        MY_AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+        MY_AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+        MY_AWS_S3_BUCKET: ${env:AWS_S3_BUCKET}
+
+# you can overwrite defaults here
+#  stage: dev
+#  region: us-east-1
+
+plugins:
+    - serverless-offline
+    - serverless-offline-dotenv
+    - serverless-dotenv-plugin
+    #     - serverless-apigw-binary
+    - serverless-plugin-custom-binary
+# custom:
+#     apigwBinary:
+#         types:
+#             - '*/*'
+functions:
+    user:
+        handler: handler.user
+        memorySize: 256
+        timeout: 10
+        events:
+            - httpApi:
+                  method: GET
+                  path: /user
+            - httpApi:
+                  method: POST
+                  path: /signup
+            - httpApi:
+                  method: POST
+                  path: /verify
+            - httpApi:
+                  method: POST
+                  path: /login
+            - httpApi:
+                  method: PATCH
+                  path: /setting
+            - httpApi:
+                  method: POST
+                  path: /profile
+    inputs:
+        handler: handler.inputs
+        memorySize: 256
+        timeout: 10
+        events:
+            - httpApi:
+                  method: GET
+                  path: /userInputs
+            - httpApi:
+                  method: POST
+                  path: /deleteInputs
+            - httpApi:
+                  method: PUT
+                  path: /updateInputs
+            - httpApi:
+                  method: POST
+                  path: /addInputExpense
+            - httpApi:
+                  method: POST
+                  path: /deleteInputExpense
+            - httpApi:
+                  method: PUT
+                  path: /updateInputExpense
+    revenue:
+        handler: handler.revenue
+        memorySize: 256
+        timeout: 10
+        events:
+            - httpApi:
+                  method: GET
+                  path: /userRevenue
+            - httpApi:
+                  method: POST
+                  path: /addRevenue
+            - httpApi:
+                  method: POST
+                  path: /deleteRevenue
+            - httpApi:
+                  method: PUT
+                  path: /updateRevenue
+            - httpApi:
+                  method: POST
+                  path: /addExpense
+            - httpApi:
+                  method: POST
+                  path: /deleteExpense
+            - httpApi:
+                  method: PUT
+                  path: /updateExpense
+            - httpApi:
+                  method: POST
+                  path: /addStartingCapital
+            - httpApi:
+                  method: POST
+                  path: /deleteStartingCapital
+            - httpApi:
+                  method: PUT
+                  path: /updateStartingCapital
+    payment:
+        handler: handler.payment
+        memorySize: 256
+        timeout: 10
+        events:
+            - httpApi:
+                  method: GET
+                  path: /userPayment
+            - httpApi:
+                  method: POST
+                  path: /add
+            - httpApi:
+                  method: DELETE
+                  path: /delete/{id}
+            - httpApi:
+                  method: PUT
+                  path: /update/{id}
+            - httpApi:
+                  method: PUT
+                  path: /status/{id}
+            - httpApi:
+                  method: PUT
+                  path: /type/{id}
+    purchasing:
+        handler: handler.purchasing
+        memorySize: 256
+        timeout: 10
+        events:
+            - httpApi:
+                  method: GET
+                  path: /userPurchasing
+            - httpApi:
+                  method: POST
+                  path: /addPurchasing
+    subscription:
+        handler: handler.subscription
+        memorySize: 256
+        timeout: 10
+        events:
+            - httpApi:
+                  method: POST
+                  path: /subscription
+            - httpApi:
+                  method: POST
+                  path: /cancel
+            - httpApi:
+                  method: GET
+                  path: /invoices
